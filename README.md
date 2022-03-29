@@ -10,3 +10,9 @@
 [![GitHub license](https://img.shields.io/github/license/appvia/terranetes-proxy)](https://github.com/appvia/terranetes-proxy/blob/main/LICENSE)
 
 # abandoned
+
+usage:
+```bash
+node_modules/.bin/ts-node
+ts-node src/run.ts -t submodules/terraform-aws-security-group
+```
