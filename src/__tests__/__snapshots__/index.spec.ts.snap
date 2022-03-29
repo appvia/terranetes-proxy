@@ -1,0 +1,284 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Can make a resource.json can make a valid resource json 1`] = `
+Object {
+  "apiVersion": "tf.isaaguilar.com/v1alpha1",
+  "kind": "Terraform",
+  "metadata": Object {
+    "labels": Object {},
+    "name": "{{ .Chart.Name }}",
+  },
+  "spec": Object {
+    "customBackend": "
+        terraform {
+          backend \\"kubernetes\\" {
+            secret_suffix    = \\"{{ .Chart.Name }}\\"
+            in_cluster_config  = true
+            namespace = \\"{{ .Release.Namespace }}\\"
+          }
+        }",
+    "env": Array [
+      Object {
+        "name": "TF_VAR_region",
+        "value": "{{ required \\"You must specify an AWS region!\\" .Values.aws.region }}",
+      },
+    ],
+    "ignoreDelete": false,
+    "outputsSecret": "{{ .Chart.Name }}-outputs",
+    "resourceDownloads": Array [
+      Object {
+        "address": "https://github.com/appvia/terraform-providers.git/aws/aws.tf?ref=main",
+      },
+    ],
+    "terraformModule": "{{ .Values.terraform.module }}?ref={{ .Values.terraform.moduleVersion }}",
+    "terraformRunnerPullPolicy": "IfNotPresent",
+    "terraformVersion": "{{ .Values.terraform.version }}",
+  },
+}
+`;
+
+exports[`Can make a resource.yaml can make a valid resource yaml 1`] = `
+"
+  apiVersion: tf.isaaguilar.com/v1alpha1
+  kind: Terraform
+  metadata:
+    name: {{ .Chart.Name }}
+  spec:
+    terraformVersion: {{ .Values.terraform.version }}
+    terraformRunnerPullPolicy: IfNotPresent
+    terraformModule: {{ .Values.terraform.module }}?ref={{ .Values.terraform.moduleVersion }}
+    resourceDownloads:
+    - address: https://github.com/appvia/terraform-providers.git/aws/aws.tf?ref=main
+    ignoreDelete: false
+    {{- with .Values.aws.credentials }}
+    credentials:
+      {{- toYaml . | nindent 2 }}
+    {{- end }}
+    env:
+    #TODO: map .Values to TF_VAR_$valuename = $value
+    - name: TF_VAR_region
+      value: {{ required \\"You must specify an AWS region!\\" .Values.aws.region }}
+    - name: TF_VAR_name
+      value: {{ required \\"You must specify a EC2-VPC security group name!\\" .Values.ec2.sg_name }}
+    - name: TF_VAR_vpc_id
+      value: {{ required \\"You must specify a VPC ID!\\" .Values.ec2.vpc_id }}
+    outputsSecret: \\"{{ .Chart.Name }}-outputs\\"
+    customBackend: |-
+      terraform {
+        backend \\"kubernetes\\" {
+          secret_suffix    = \\"{{ .Chart.Name }}\\"
+          in_cluster_config  = true
+          namespace = \\"{{ .Release.Namespace }}\\"
+        }
+      }
+  "
+`;
+
+exports[`Can make a valid values.yaml can make a valid values.yaml 1`] = `
+"
+# Map of groups of security group rules to use to generate modules (see update_groups.sh)
+auto_groups: null
+
+# List of computed egress rules to create by name
+computed_egress_rules: null
+
+# List of computed egress rules to create where 'cidr_blocks' is used
+computed_egress_with_cidr_blocks: null
+
+# List of computed egress rules to create where 'ipv6_cidr_blocks' is used
+computed_egress_with_ipv6_cidr_blocks: null
+
+# List of computed egress rules to create where 'self' is defined
+computed_egress_with_self: null
+
+# List of computed egress rules to create where 'source_security_group_id' is used
+computed_egress_with_source_security_group_id: null
+
+# List of computed ingress rules to create by name
+computed_ingress_rules: null
+
+# List of computed ingress rules to create where 'cidr_blocks' is used
+computed_ingress_with_cidr_blocks: null
+
+# List of computed ingress rules to create where 'ipv6_cidr_blocks' is used
+computed_ingress_with_ipv6_cidr_blocks: null
+
+# List of computed ingress rules to create where 'self' is defined
+computed_ingress_with_self: null
+
+# List of computed ingress rules to create where 'source_security_group_id' is used
+computed_ingress_with_source_security_group_id: null
+
+# Whether to create security group and all rules
+create: null
+
+# Whether to create security group
+create_sg: null
+
+# Time to wait for a security group to be created
+create_timeout: null
+
+# Time to wait for a security group to be deleted
+delete_timeout: null
+
+# Description of security group
+description: null
+
+# List of IPv4 CIDR ranges to use on all egress rules
+egress_cidr_blocks: null
+
+# List of IPv6 CIDR ranges to use on all egress rules
+egress_ipv6_cidr_blocks: null
+
+# List of prefix list IDs (for allowing access to VPC endpoints) to use on all egress rules
+egress_prefix_list_ids: null
+
+# List of egress rules to create by name
+egress_rules: null
+
+# List of egress rules to create where 'cidr_blocks' is used
+egress_with_cidr_blocks: null
+
+# List of egress rules to create where 'ipv6_cidr_blocks' is used
+egress_with_ipv6_cidr_blocks: null
+
+# List of egress rules to create where 'self' is defined
+egress_with_self: null
+
+# List of egress rules to create where 'source_security_group_id' is used
+egress_with_source_security_group_id: null
+
+# List of IPv4 CIDR ranges to use on all ingress rules
+ingress_cidr_blocks: null
+
+# List of IPv6 CIDR ranges to use on all ingress rules
+ingress_ipv6_cidr_blocks: null
+
+# List of prefix list IDs (for allowing access to VPC endpoints) to use on all ingress rules
+ingress_prefix_list_ids: null
+
+# List of ingress rules to create by name
+ingress_rules: null
+
+# List of ingress rules to create where 'cidr_blocks' is used
+ingress_with_cidr_blocks: null
+
+# List of ingress rules to create where 'ipv6_cidr_blocks' is used
+ingress_with_ipv6_cidr_blocks: null
+
+# List of ingress rules to create where 'self' is defined
+ingress_with_self: null
+
+# List of ingress rules to create where 'source_security_group_id' is used
+ingress_with_source_security_group_id: null
+
+# Name of security group - not required if create_sg is false
+name: null
+
+# Number of computed egress rules to create by name
+number_of_computed_egress_rules: null
+
+# Number of computed egress rules to create where 'cidr_blocks' is used
+number_of_computed_egress_with_cidr_blocks: null
+
+# Number of computed egress rules to create where 'ipv6_cidr_blocks' is used
+number_of_computed_egress_with_ipv6_cidr_blocks: null
+
+# Number of computed egress rules to create where 'self' is defined
+number_of_computed_egress_with_self: null
+
+# Number of computed egress rules to create where 'source_security_group_id' is used
+number_of_computed_egress_with_source_security_group_id: null
+
+# Number of computed ingress rules to create by name
+number_of_computed_ingress_rules: null
+
+# Number of computed ingress rules to create where 'cidr_blocks' is used
+number_of_computed_ingress_with_cidr_blocks: null
+
+# Number of computed ingress rules to create where 'ipv6_cidr_blocks' is used
+number_of_computed_ingress_with_ipv6_cidr_blocks: null
+
+# Number of computed ingress rules to create where 'self' is defined
+number_of_computed_ingress_with_self: null
+
+# Number of computed ingress rules to create where 'source_security_group_id' is used
+number_of_computed_ingress_with_source_security_group_id: null
+
+# Do you agree that Putin doesn't respect Ukrainian sovereignty and territorial integrity? More info: https://en.wikipedia.org/wiki/Putin_khuylo!
+putin_khuylo: null
+
+# Instruct Terraform to revoke all of the Security Groups attached ingress and egress rules before deleting the rule itself. Enable for EMR.
+revoke_rules_on_delete: null
+
+# Map of known security group rules (define as 'name' = ['from port', 'to port', 'protocol', 'description'])
+rules: null
+
+# ID of existing security group whose rules we will manage
+security_group_id: null
+
+# A mapping of tags to assign to security group
+tags: null
+
+# Whether to use name_prefix or fixed name. Should be true to able to update security group name after initial creation
+use_name_prefix: null
+
+# ID of the VPC where to create security group
+vpc_id: null
+"
+`;
+
+exports[`parse hcl can format variables 1`] = `
+Object {
+  "auto_groups": "Map of groups of security group rules to use to generate modules (see update_groups.sh)",
+  "computed_egress_rules": "List of computed egress rules to create by name",
+  "computed_egress_with_cidr_blocks": "List of computed egress rules to create where 'cidr_blocks' is used",
+  "computed_egress_with_ipv6_cidr_blocks": "List of computed egress rules to create where 'ipv6_cidr_blocks' is used",
+  "computed_egress_with_self": "List of computed egress rules to create where 'self' is defined",
+  "computed_egress_with_source_security_group_id": "List of computed egress rules to create where 'source_security_group_id' is used",
+  "computed_ingress_rules": "List of computed ingress rules to create by name",
+  "computed_ingress_with_cidr_blocks": "List of computed ingress rules to create where 'cidr_blocks' is used",
+  "computed_ingress_with_ipv6_cidr_blocks": "List of computed ingress rules to create where 'ipv6_cidr_blocks' is used",
+  "computed_ingress_with_self": "List of computed ingress rules to create where 'self' is defined",
+  "computed_ingress_with_source_security_group_id": "List of computed ingress rules to create where 'source_security_group_id' is used",
+  "create": "Whether to create security group and all rules",
+  "create_sg": "Whether to create security group",
+  "create_timeout": "Time to wait for a security group to be created",
+  "delete_timeout": "Time to wait for a security group to be deleted",
+  "description": "Description of security group",
+  "egress_cidr_blocks": "List of IPv4 CIDR ranges to use on all egress rules",
+  "egress_ipv6_cidr_blocks": "List of IPv6 CIDR ranges to use on all egress rules",
+  "egress_prefix_list_ids": "List of prefix list IDs (for allowing access to VPC endpoints) to use on all egress rules",
+  "egress_rules": "List of egress rules to create by name",
+  "egress_with_cidr_blocks": "List of egress rules to create where 'cidr_blocks' is used",
+  "egress_with_ipv6_cidr_blocks": "List of egress rules to create where 'ipv6_cidr_blocks' is used",
+  "egress_with_self": "List of egress rules to create where 'self' is defined",
+  "egress_with_source_security_group_id": "List of egress rules to create where 'source_security_group_id' is used",
+  "ingress_cidr_blocks": "List of IPv4 CIDR ranges to use on all ingress rules",
+  "ingress_ipv6_cidr_blocks": "List of IPv6 CIDR ranges to use on all ingress rules",
+  "ingress_prefix_list_ids": "List of prefix list IDs (for allowing access to VPC endpoints) to use on all ingress rules",
+  "ingress_rules": "List of ingress rules to create by name",
+  "ingress_with_cidr_blocks": "List of ingress rules to create where 'cidr_blocks' is used",
+  "ingress_with_ipv6_cidr_blocks": "List of ingress rules to create where 'ipv6_cidr_blocks' is used",
+  "ingress_with_self": "List of ingress rules to create where 'self' is defined",
+  "ingress_with_source_security_group_id": "List of ingress rules to create where 'source_security_group_id' is used",
+  "name": "Name of security group - not required if create_sg is false",
+  "number_of_computed_egress_rules": "Number of computed egress rules to create by name",
+  "number_of_computed_egress_with_cidr_blocks": "Number of computed egress rules to create where 'cidr_blocks' is used",
+  "number_of_computed_egress_with_ipv6_cidr_blocks": "Number of computed egress rules to create where 'ipv6_cidr_blocks' is used",
+  "number_of_computed_egress_with_self": "Number of computed egress rules to create where 'self' is defined",
+  "number_of_computed_egress_with_source_security_group_id": "Number of computed egress rules to create where 'source_security_group_id' is used",
+  "number_of_computed_ingress_rules": "Number of computed ingress rules to create by name",
+  "number_of_computed_ingress_with_cidr_blocks": "Number of computed ingress rules to create where 'cidr_blocks' is used",
+  "number_of_computed_ingress_with_ipv6_cidr_blocks": "Number of computed ingress rules to create where 'ipv6_cidr_blocks' is used",
+  "number_of_computed_ingress_with_self": "Number of computed ingress rules to create where 'self' is defined",
+  "number_of_computed_ingress_with_source_security_group_id": "Number of computed ingress rules to create where 'source_security_group_id' is used",
+  "putin_khuylo": "Do you agree that Putin doesn't respect Ukrainian sovereignty and territorial integrity? More info: https://en.wikipedia.org/wiki/Putin_khuylo!",
+  "revoke_rules_on_delete": "Instruct Terraform to revoke all of the Security Groups attached ingress and egress rules before deleting the rule itself. Enable for EMR.",
+  "rules": "Map of known security group rules (define as 'name' = ['from port', 'to port', 'protocol', 'description'])",
+  "security_group_id": "ID of existing security group whose rules we will manage",
+  "tags": "A mapping of tags to assign to security group",
+  "use_name_prefix": "Whether to use name_prefix or fixed name. Should be true to able to update security group name after initial creation",
+  "vpc_id": "ID of the VPC where to create security group",
+}
+`;
