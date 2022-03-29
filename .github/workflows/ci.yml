@@ -93,47 +93,47 @@ jobs:
       - uses: actions/upload-artifact@82c141cc518b40d92cc801eee768e7aafc9c2fa2 # renovate: tag=v2.3.1
         with:
           name: terranetes-alpine-arm64
-          path: dist/bin/terranetes-alpine-arm64
+          path: dist/bin/terranetes-proxy-alpine-arm64
       - uses: actions/upload-artifact@82c141cc518b40d92cc801eee768e7aafc9c2fa2 # renovate: tag=v2.3.1
         with:
           name: terranetes-alpine-x64
-          path: dist/bin/terranetes-alpine-x64
+          path: dist/bin/terranetes-proxy-alpine-x64
 
       - uses: actions/upload-artifact@82c141cc518b40d92cc801eee768e7aafc9c2fa2 # renovate: tag=v2.3.1
         with:
           name: terranetes-linux-arm64
-          path: dist/bin/terranetes-linux-arm64
+          path: dist/bin/terranetes-proxy-linux-arm64
       - uses: actions/upload-artifact@82c141cc518b40d92cc801eee768e7aafc9c2fa2 # renovate: tag=v2.3.1
         with:
           name: terranetes-linux-x64
-          path: dist/bin/terranetes-linux-x64
+          path: dist/bin/terranetes-proxy-linux-x64
 
       - uses: actions/upload-artifact@82c141cc518b40d92cc801eee768e7aafc9c2fa2 # renovate: tag=v2.3.1
         with:
           name: terranetes-linuxstatic-arm64
-          path: dist/bin/terranetes-linuxstatic-arm64
+          path: dist/bin/terranetes-proxy-linuxstatic-arm64
       - uses: actions/upload-artifact@82c141cc518b40d92cc801eee768e7aafc9c2fa2 # renovate: tag=v2.3.1
         with:
           name: terranetes-linuxstatic-x64
-          path: dist/bin/terranetes-linuxstatic-x64
+          path: dist/bin/terranetes-proxy-linuxstatic-x64
 
       - uses: actions/upload-artifact@82c141cc518b40d92cc801eee768e7aafc9c2fa2 # renovate: tag=v2.3.1
         with:
           name: terranetes-win-arm64.exe
-          path: dist/bin/terranetes-win-arm64.exe
+          path: dist/bin/terranetes-proxy-win-arm64.exe
       - uses: actions/upload-artifact@82c141cc518b40d92cc801eee768e7aafc9c2fa2 # renovate: tag=v2.3.1
         with:
           name: terranetes-win-x64.exe
-          path: dist/bin/terranetes-win-x64.exe
+          path: dist/bin/terranetes-proxy-win-x64.exe
 
       - uses: actions/upload-artifact@82c141cc518b40d92cc801eee768e7aafc9c2fa2 # renovate: tag=v2.3.1
         with:
           name: terranetes-macos-arm64
-          path: dist/bin/terranetes-macos-arm64
+          path: dist/bin/terranetes-proxy-macos-arm64
       - uses: actions/upload-artifact@82c141cc518b40d92cc801eee768e7aafc9c2fa2 # renovate: tag=v2.3.1
         with:
           name: terranetes-macos-x64
-          path: dist/bin/terranetes-macos-x64
+          path: dist/bin/terranetes-proxy-macos-x64
 
   release-binaries:
     if: ${{ github.ref == 'refs/heads/main' }}
