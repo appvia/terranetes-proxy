@@ -1,0 +1,50 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    ":semanticPrefixFixDepsChoreOthers",
+    ":autodetectPinVersions",
+    "group:recommended",
+    "workarounds:all"
+  ],
+  "automerge": true,
+  "platformAutomerge": true,
+  "lockFileMaintenance": {
+    "enabled": true
+  },
+  "pinDigests": true,
+  "dependencyDashboard": false,
+  "rollbackPrs": false,
+  "assignees": [
+    "chrisns"
+  ],
+  "github-actions": {
+    "enabled": true
+  },
+  "npm": {
+    "enabled": true
+  },
+  "nvm": {
+    "enabled": true
+  },
+  "docker": {
+    "enabled": true
+  },
+  "regex": {
+    "enabled": true
+  },
+  "ignorePaths": [],
+  "git-submodules": {
+    "enabled": true
+  },
+  "regexManagers": [
+    {
+      "fileMatch": [
+        "tests/kind-config.*\\.yaml"
+      ],
+      "matchStrings": [
+        "image: (?<depName>.*?):(?<currentValue>.*?)\\s+"
+      ],
+      "datasourceTemplate": "docker"
+    }
+  ]
+}
