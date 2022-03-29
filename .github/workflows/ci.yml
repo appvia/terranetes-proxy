@@ -1,0 +1,229 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - "v*.*.*"
+  pull_request:
+    branches:
+      - main
+      - version-bumps
+
+jobs:
+  checkout:
+    name: Checkout
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579 # renovate: tag=v2.4.0
+        with:
+          submodules: true
+      - name: Tar files
+        run: tar -cf checkout.tar ./
+      - uses: actions/upload-artifact@82c141cc518b40d92cc801eee768e7aafc9c2fa2 # renovate: tag=v2.3.1
+        with:
+          name: checkout.tar
+          path: checkout.tar
+
+  js-get-deps:
+    needs: checkout
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@f023be2c48cc18debc3bacd34cb396e0295e2869 # renovate: tag=v2.1.0
+        with:
+          name: checkout.tar
+
+      - name: Untar files
+        run: tar -xf checkout.tar ./
+
+      - uses: actions/setup-node@1f8c6b94b26d0feae1e387ca63ccbdc44d27b561 # renovate: tag=v2.5.1
+        with:
+          node-version-file: '.nvmrc'
+      - run: npm install
+
+      - name: Tar files
+        run: tar -cf codebase.tar ./
+      - uses: actions/upload-artifact@82c141cc518b40d92cc801eee768e7aafc9c2fa2 # renovate: tag=v2.3.1
+        with:
+          name: codebase.tar
+          path: codebase.tar
+
+  js-units:
+    runs-on: ubuntu-latest
+    needs: js-get-deps
+    permissions:
+      checks: write
+
+    steps:
+      - uses: actions/download-artifact@f023be2c48cc18debc3bacd34cb396e0295e2869 # renovate: tag=v2.1.0
+        with:
+          name: codebase.tar
+      - name: Untar files
+        run: tar -xf codebase.tar ./
+      - uses: actions/setup-node@1f8c6b94b26d0feae1e387ca63ccbdc44d27b561 # renovate: tag=v2.5.1
+        with:
+          node-version-file: '.nvmrc'
+      - run: npm run ci-test
+      - uses: tanmen/jest-reporter@3216c80e8bc9370133df330696754aca95749eaf # renovate: tag=v1
+        if: always()
+        with:
+          action-name: Jest Unit Test Results
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+  js-build-binaries:
+    runs-on: ubuntu-latest
+    needs: js-get-deps
+    steps:
+      - uses: actions/download-artifact@f023be2c48cc18debc3bacd34cb396e0295e2869 # renovate: tag=v2.1.0
+        with:
+          name: codebase.tar
+      - name: Untar files
+        run: tar -xf codebase.tar ./
+      - uses: actions/setup-node@1f8c6b94b26d0feae1e387ca63ccbdc44d27b561 # renovate: tag=v2.5.1
+        with:
+          node-version-file: '.nvmrc'
+
+      - uses: MOZGIII/install-ldid-action@d5ab465f3a66a4d60a59882b935eb30e18e8d043 # renovate: tag=v1
+        with:
+          tag: v2.1.5-procursus2
+
+      - run: npm run build
+
+      - uses: actions/upload-artifact@82c141cc518b40d92cc801eee768e7aafc9c2fa2 # renovate: tag=v2.3.1
+        with:
+          name: terranetes-alpine-arm64
+          path: dist/bin/terranetes-alpine-arm64
+      - uses: actions/upload-artifact@82c141cc518b40d92cc801eee768e7aafc9c2fa2 # renovate: tag=v2.3.1
+        with:
+          name: terranetes-alpine-x64
+          path: dist/bin/terranetes-alpine-x64
+
+      - uses: actions/upload-artifact@82c141cc518b40d92cc801eee768e7aafc9c2fa2 # renovate: tag=v2.3.1
+        with:
+          name: terranetes-linux-arm64
+          path: dist/bin/terranetes-linux-arm64
+      - uses: actions/upload-artifact@82c141cc518b40d92cc801eee768e7aafc9c2fa2 # renovate: tag=v2.3.1
+        with:
+          name: terranetes-linux-x64
+          path: dist/bin/terranetes-linux-x64
+
+      - uses: actions/upload-artifact@82c141cc518b40d92cc801eee768e7aafc9c2fa2 # renovate: tag=v2.3.1
+        with:
+          name: terranetes-linuxstatic-arm64
+          path: dist/bin/terranetes-linuxstatic-arm64
+      - uses: actions/upload-artifact@82c141cc518b40d92cc801eee768e7aafc9c2fa2 # renovate: tag=v2.3.1
+        with:
+          name: terranetes-linuxstatic-x64
+          path: dist/bin/terranetes-linuxstatic-x64
+
+      - uses: actions/upload-artifact@82c141cc518b40d92cc801eee768e7aafc9c2fa2 # renovate: tag=v2.3.1
+        with:
+          name: terranetes-win-arm64.exe
+          path: dist/bin/terranetes-win-arm64.exe
+      - uses: actions/upload-artifact@82c141cc518b40d92cc801eee768e7aafc9c2fa2 # renovate: tag=v2.3.1
+        with:
+          name: terranetes-win-x64.exe
+          path: dist/bin/terranetes-win-x64.exe
+
+      - uses: actions/upload-artifact@82c141cc518b40d92cc801eee768e7aafc9c2fa2 # renovate: tag=v2.3.1
+        with:
+          name: terranetes-macos-arm64
+          path: dist/bin/terranetes-macos-arm64
+      - uses: actions/upload-artifact@82c141cc518b40d92cc801eee768e7aafc9c2fa2 # renovate: tag=v2.3.1
+        with:
+          name: terranetes-macos-x64
+          path: dist/bin/terranetes-macos-x64
+
+  release-binaries:
+    if: ${{ github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    needs:
+      - js-build-binaries
+      - semver
+
+    permissions:
+      contents: write
+      id-token: write
+
+    steps:
+
+      - uses: actions/download-artifact@f023be2c48cc18debc3bacd34cb396e0295e2869 # renovate: tag=v2.1.0
+        with:
+          name: terranetes-alpine-arm64
+      - uses: actions/download-artifact@f023be2c48cc18debc3bacd34cb396e0295e2869 # renovate: tag=v2.1.0
+        with:
+          name: terranetes-alpine-x64
+
+      - uses: actions/download-artifact@f023be2c48cc18debc3bacd34cb396e0295e2869 # renovate: tag=v2.1.0
+        with:
+          name: terranetes-linux-arm64
+      - uses: actions/download-artifact@f023be2c48cc18debc3bacd34cb396e0295e2869 # renovate: tag=v2.1.0
+        with:
+          name: terranetes-linux-x64
+
+      - uses: actions/download-artifact@f023be2c48cc18debc3bacd34cb396e0295e2869 # renovate: tag=v2.1.0
+        with:
+          name: terranetes-linuxstatic-arm64
+      - uses: actions/download-artifact@f023be2c48cc18debc3bacd34cb396e0295e2869 # renovate: tag=v2.1.0
+        with:
+          name: terranetes-linuxstatic-x64
+
+      - uses: actions/download-artifact@f023be2c48cc18debc3bacd34cb396e0295e2869 # renovate: tag=v2.1.0
+        with:
+          name: terranetes-win-arm64.exe
+      - uses: actions/download-artifact@f023be2c48cc18debc3bacd34cb396e0295e2869 # renovate: tag=v2.1.0
+        with:
+          name: terranetes-win-x64.exe
+
+      - uses: actions/download-artifact@f023be2c48cc18debc3bacd34cb396e0295e2869 # renovate: tag=v2.1.0
+        with:
+          name: terranetes-macos-arm64
+      - uses: actions/download-artifact@f023be2c48cc18debc3bacd34cb396e0295e2869 # renovate: tag=v2.1.0
+        with:
+          name: terranetes-macos-x64
+
+      - uses: "marvinpinto/action-automatic-releases@v1.2.1"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: v${{ needs.semver.outputs.semantic_version}}
+          prerelease: false
+          title: v${{ needs.semver.outputs.semantic_version}}
+          files: "*"
+  codeql:
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+    needs: checkout
+    steps:
+      - uses: actions/download-artifact@f023be2c48cc18debc3bacd34cb396e0295e2869 # renovate: tag=v2.1.0
+        with:
+          name: checkout.tar
+
+      - name: Untar files
+        run: tar -xf checkout.tar ./
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@1a927e9307bc11970b2c679922ebc4d03a5bd980 # renovate: tag=v1.0.31
+        with:
+          languages: javascript
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@1a927e9307bc11970b2c679922ebc4d03a5bd980 # renovate: tag=v1.0.31
+
+  semver:
+    name: Generate a semantic version number
+    runs-on: ubuntu-latest
+    outputs:
+      semantic_version: ${{ steps.semver.outputs.semantic_version }}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579 # renovate: tag=v2
+        with:
+          fetch-depth: '0'
+      - name: Semver run
+        id: semver
+        uses: lukaszraczylo/semver-generator@452513279da37813fc1f2d54a4583aa0eaa1aeac # renovate: tag=1.4.2
+        with:
+          config_file: .github/semver.yaml
+          repository_local: true
