@@ -1499,13 +1499,13 @@ describe("Can make a valid values.yaml", () => {
   });
 });
 
-describe.skip("Can make a resource.json", () => {
-  it("can make a valid resource json", () => {
-    const formatted = mod.formatVariables(fixtures);
-    const yaml = mod.makeResourceJson(formatted);
-    expect(yaml).toMatchSnapshot();
-  });
-});
+// describe.skip("Can make a resource.json", () => {
+//   it("can make a valid resource json", () => {
+//     const formatted = mod.formatVariables(fixtures);
+//     const yaml = mod.makeResourceJson(formatted);
+//     expect(yaml).toMatchSnapshot();
+//   });
+// });
 
 describe("Can make a resource.yaml", () => {
   it("can make a valid resource yaml", () => {

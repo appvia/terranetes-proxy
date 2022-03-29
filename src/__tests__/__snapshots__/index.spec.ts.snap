@@ -1,42 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Can make a resource.json can make a valid resource json 1`] = `
-Object {
-  "apiVersion": "tf.isaaguilar.com/v1alpha1",
-  "kind": "Terraform",
-  "metadata": Object {
-    "labels": Object {},
-    "name": "{{ .Chart.Name }}",
-  },
-  "spec": Object {
-    "customBackend": "
-        terraform {
-          backend \\"kubernetes\\" {
-            secret_suffix    = \\"{{ .Chart.Name }}\\"
-            in_cluster_config  = true
-            namespace = \\"{{ .Release.Namespace }}\\"
-          }
-        }",
-    "env": Array [
-      Object {
-        "name": "TF_VAR_region",
-        "value": "{{ required \\"You must specify an AWS region!\\" .Values.aws.region }}",
-      },
-    ],
-    "ignoreDelete": false,
-    "outputsSecret": "{{ .Chart.Name }}-outputs",
-    "resourceDownloads": Array [
-      Object {
-        "address": "https://github.com/appvia/terraform-providers.git/aws/aws.tf?ref=main",
-      },
-    ],
-    "terraformModule": "{{ .Values.terraform.module }}?ref={{ .Values.terraform.moduleVersion }}",
-    "terraformRunnerPullPolicy": "IfNotPresent",
-    "terraformVersion": "{{ .Values.terraform.version }}",
-  },
-}
-`;
-
 exports[`Can make a resource.yaml can make a valid resource yaml 1`] = `
 "
   apiVersion: tf.isaaguilar.com/v1alpha1
