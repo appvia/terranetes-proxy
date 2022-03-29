@@ -1,0 +1,3 @@
+[submodule "submodules/terraform-aws-security-group"]
+	path = submodules/terraform-aws-security-group
+	url = https://github.com/terraform-aws-modules/terraform-aws-security-group

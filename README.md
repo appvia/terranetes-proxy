@@ -9,4 +9,4 @@
 [![Appvia Community Slack](https://img.shields.io/badge/slack-@appvia_community-default.svg?logo=slack)](https://join.slack.com/t/appvia-community/shared_invite/zt-rcqz9vif-eDDQrbD_EAZBxsem30c2bQ)
 [![GitHub license](https://img.shields.io/github/license/appvia/terranetes-proxy)](https://github.com/appvia/terranetes-proxy/blob/main/LICENSE)
 
-WIP
+# abandoned
